@@ -1,0 +1,24 @@
+.manage-drug-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    background-color: aliceblue;
+    padding: 1rem;
+}
+.manage-drug-select {
+    color: blueviolet;
+}
+.manage-drug-button-container {
+    display: flex;
+    flex-direction: row;
+    gap: 1.5rem;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+.manage-drug-delete-button {
+    background-color: #b31212;
+    color: #f0f8ff;
+}

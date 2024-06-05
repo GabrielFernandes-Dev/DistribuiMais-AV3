@@ -1,0 +1,24 @@
+.drug-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+.drug-form-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+.drug-form-row label {
+    font-weight: bold;
+    font-size: 1.25rem;
+}
+.drug-form-row input {
+    background-color: aliceblue;
+    color: blueviolet;
+    outline: none;
+    width: 15rem;
+    height: 1.75rem;
+    font-size: 1.5rem;
+    padding: 0.25rem;
+}

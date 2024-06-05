@@ -1,0 +1,26 @@
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 95%;
+    height: 3rem;
+    display: flex;
+    justify-content: space-between;
+    background-color: white;
+    border-radius: 10px;
+    align-items: center;
+    z-index: 9999; 
+  }
+  
+  .navbar-logo {
+    height: 3.5rem;
+  }
+
+  .navbar a {
+    margin: 0 10px;
+    color: black;
+    text-decoration: none;
+  }
+
+  
