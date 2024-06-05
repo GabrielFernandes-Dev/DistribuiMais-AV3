@@ -1,6 +1,6 @@
 # DistribuiMais-AV3
 
-Este repositório contém o projeto **DistribuiMais-AV3**, desenvolvido como parte de um trabalho de programação funcional. O projeto utiliza Python, mysql e React para implementar suas funcionalidades. Para mais detalhes sobre o desenvolvimento e a implementação, consulte o [relatório do projeto](https://docs.google.com/document/d/15W5pSPbCUGyDaseVJZp_1pkmLIyI35EOwRFWCcr4iak/edit).
+Este repositório contém o projeto **DistribuiMais-AV3**, desenvolvido como parte de um trabalho de programação funcional. O projeto utiliza Python, mysql e React para implementar suas funcionalidades. Para mais detalhes sobre o desenvolvimento e a implementação, consulte o relatório do projeto.
 
 ## Índice
 
@@ -93,4 +93,4 @@ Este projeto está licenciado sob a Licença MIT. Veja o arquivo [LICENSE](LICEN
 - Gabriel Fernandes - [GitHub](https://github.com/gabrielfernandes-Smarthis)
 - Mateus Ferrareze Malgarin
 
-Para mais informações sobre o projeto, consulte o [relatório detalhado](https://docs.google.com/document/d/15W5pSPbCUGyDaseVJZp_1pkmLIyI35EOwRFWCcr4iak/edit).
+Para mais informações sobre o projeto, consulte o relatório detalhado.
