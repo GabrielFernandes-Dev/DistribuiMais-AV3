@@ -4,6 +4,7 @@ import GraphComponent from "./components/Graph";
 import Menu from "./components/Menu";
 import Select from "./components/Select";
 import { generateAPIHandler, setInitialData } from "./utils/utils";
+import { Grafo } from "./utils/Grafo";
 
 function App() {
   const generateNodeObject = (id, x, y) => {
@@ -23,6 +24,8 @@ function App() {
 
   const [vertexData, setVertexData] = useState([]);
   const [edgeData, setEdgeData] = useState([]);
+  const [vertexDataD, setVertexDataD] = useState([]);
+  const [edgeDataD, setEdgeDataD] = useState([]);
   const [streets, setStreets] = useState([]);
   const [streetLinks, setStreetLinks] = useState([]);
   const [destinations, setDestinations] = useState([]);
@@ -42,18 +45,22 @@ function App() {
     ];
     setInitialData(apiHandlers);
   }, []);
+
   useEffect(() => {
     if (destinations.length > 0 && streetLinks.length > 0 && center.length > 0) {
       handleVertex();
       handleEdge();
     }
   }, [center, destinations, streetLinks])
+
   const findDestinationById = (id) => {
     return destinations.filter(destination => destination.iddestino == id)[0];
   }
+
   const findStreetById = (id) => {
     return streets.filter(street => street.idrua == id)[0];
   }
+
   const handleVertex = () => {
     const aux = [];
     aux.push(generateNodeObject(center[0]?.nome, 0, 0));
@@ -62,6 +69,7 @@ function App() {
     })
     setVertexData(aux);
   }
+
   const handleEdge = () => {
     let destinationAux = destinations.map((destination) => {
       return {
@@ -69,18 +77,20 @@ function App() {
         streets: []
       }
     });
+
     streetLinks.forEach((link) => {
-      console.log(destinationAux);
       const destination = link.destino_iddestino;
       const street = link.rua_idrua;
       destinationAux.filter((item) => item.iddestino == destination)[0].streets.push(street);
     });
+
     destinationAux = destinationAux.map((item) => {
       return {
         id: item.iddestino,
         streets: item.streets
       }
     });
+
     const streetDict = {};
     destinationAux.forEach(item => {
       item.streets.forEach(street => {
@@ -95,7 +105,7 @@ function App() {
     const pairs = [];
     Object.keys(streetDict).forEach(street => {
       const ids = streetDict[street];
-      console.log(ids);
+      // console.log(ids);
       if (ids.length > 1) {
         for (let i = 0; i < ids.length; i++) {
           for (let j = i + 1; j < ids.length; j++) {
@@ -106,11 +116,56 @@ function App() {
         pairs.push(generateLink(center[0].nome, findDestinationById(ids[0]).nome, parseInt(street)))
       }
     });
+    
+    const grafoDijkstra = []
+    console.log("grafoDijkstra");
+    Object.keys(streetDict).forEach(street => {
+      const ids = streetDict[street];
+      
+      if (ids.length > 1) {
+        for (let i = 0; i < ids.length; i++) {
+          for (let j = i + 1; j < ids.length; j++) {
+            pairsD.push(generateLink(findDestinationById(ids[i]).nome, findDestinationById(ids[j]).nome, parseInt(street)));
+          }
+        }
+      } else {
+        pairsD.push(generateLink(center[0].nome, findDestinationById(ids[0]).nome, parseInt(street)))
+      }
+    })
+
+    const pairsD = [];
+    Object.keys(streetDict).forEach(street => {
+      const ids = streetDict[street];
+      // console.log(ids);
+      if (ids.length > 1) {
+        for (let i = 0; i < ids.length; i++) {
+          for (let j = i + 1; j < ids.length; j++) {
+            pairsD.push(generateLink(findDestinationById(ids[i]).nome, findDestinationById(ids[j]).nome, parseInt(street)));
+          }
+        }
+      } else {
+        pairsD.push(generateLink(center[0].nome, findDestinationById(ids[0]).nome, parseInt(street)))
+      }
+    });
 
     // Resultado
-    console.log(pairs);
+    // console.log(pairs);
     setEdgeData(pairs);
+    // console.log(pairsD);
+    setEdgeDataD(pairsD);
   }
+
+  function ExecutarDijkstra(destinos, ruas) {
+    grafo = new Grafo()
+    destinos.forEach(destino => {
+      grafo.insereVertice(destino)
+    });
+
+    ruas.forEach(rua => {
+      grafo.insereAresta()
+    });
+  }
+
   return (
     <>
       <Menu></Menu>
