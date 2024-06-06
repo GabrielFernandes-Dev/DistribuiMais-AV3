@@ -8,7 +8,7 @@ export class Grafo {
 
     insereVertice(nome){
         for(let i = 0; i < this.vertices.length; i++){
-            if(this.vertices[i].nome == nome) return this.vertices[i].nome
+            if(this.vertices[i].nome == nome) return this.vertices[i]
         }
         const vertice = new Vertice(nome);
         this.vertices.push(vertice);

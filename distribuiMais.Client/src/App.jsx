@@ -30,12 +30,14 @@ function App() {
   const [streetLinks, setStreetLinks] = useState([]);
   const [destinations, setDestinations] = useState([]);
   const [center, setCenter] = useState([]);
+  const [centerStreets, setCenterStreets] = useState([]);
   const [drugs, setDrugs] = useState([]);
   const [stock, setStock] = useState([]);
 
 
   useEffect(() => {
     const apiHandlers = [
+      generateAPIHandler("centrodistribuicaohasrua", setCenterStreets),
       generateAPIHandler("medicamento", setDrugs),
       generateAPIHandler("destino", setDestinations),
       generateAPIHandler("centrodistribuicao", setCenter),
@@ -62,6 +64,9 @@ function App() {
   }
 
   const findDestinationIdByName = (name) => { 
+    if (name === center[0]?.nome) {
+      return center[0];
+    }
     return destinations.filter(destination => destination.nome == name)[0].iddestino;
   }
 
@@ -69,7 +74,14 @@ function App() {
     const sourceId = findDestinationIdByName(source);
     const targetId = findDestinationIdByName(target);
   
-    const sourceLinks = streetLinks.filter(link => link.destino_iddestino == sourceId);
+    let sourceLinks
+    if (sourceId.idcentrodistribuicao == undefined) {
+      sourceLinks = streetLinks.filter(link => link.destino_iddestino == sourceId);
+    }
+    else {
+      sourceLinks = centerStreets.filter(link => link.centrodistribuicao_idcentrodistribuicao == sourceId.idcentrodistribuicao);
+    }
+    
     const targetLinks = streetLinks.filter(link => link.destino_iddestino == targetId);
   
     for (let sourceLink of sourceLinks) {
@@ -93,7 +105,6 @@ function App() {
 
   const handleVertexD = (resultado) => {
     const aux = [];
-    aux.push(generateNodeObject(center[0]?.nome));
     resultado.forEach((destination) => {
       aux.push(generateNodeObject(destination.nome))
     })
@@ -150,13 +161,16 @@ function App() {
     // Monta objeto para executar o dikjstra
     const objVerticesDijkstra = MontarObjetoDijkstra(streetDict);
     // Executa o dijkstra
-    const resultadoDijkstra = ExecutarDijkstra(objVerticesDijkstra, "cd", "f5");
+    const resultadoDijkstra = ExecutarDijkstra(objVerticesDijkstra, "cd", "f5"); // TODO - Alterar para pegar o destino selecionado ("f5" está fixo precisa vir do select destino)
 
     handleVertexD(resultadoDijkstra)
     const pairsD = [];
     for (let i = 0; i < resultadoDijkstra.length - 1; i++) {
       pairsD.push(generateLink(resultadoDijkstra[i].nome, resultadoDijkstra[i + 1].nome, findStreetByVertices(resultadoDijkstra[i].nome, resultadoDijkstra[i + 1].nome)));
     }
+
+    console.log("Olhando pares do dijkstra retornados na montagem");
+    console.log(pairsD);
 
     // Resultado
     setEdgeData(pairs);
@@ -202,8 +216,8 @@ function App() {
       }
     })
 
-    console.log("Olhando vértices do dijkstra retornados na montagem");
-    console.log(verticesDijkstra)
+    // console.log("Olhando vértices do dijkstra retornados na montagem");
+    // console.log(verticesDijkstra)
     return verticesDijkstra;
   }
 
@@ -212,14 +226,9 @@ function App() {
     
     console.log("Construir grafo");
     vertices.forEach(vertice => {
-      console.log("Aresta com: " + vertice.vertice1 + " e " + vertice.vertice2)
-
-      const vertice1 = grafo.insereVertice(vertice.vertice1)
-      const vertice2 = grafo.insereVertice(vertice.vertice2)
+      let vertice1 = grafo.insereVertice(vertice.vertice1)
+      let vertice2 = grafo.insereVertice(vertice.vertice2)
       grafo.insereAresta(vertice1, vertice2, vertice.peso)
-
-      console.log("Vértice 1: " + vertice1.nome)
-      console.log("Vértice 2: " + vertice2.nome)
       //console.log("Olhando grafo: " + grafo.vertices[0].adjacencia[0].vertice.nome);
     });
 
@@ -249,7 +258,7 @@ function App() {
             <button style={{ margin: "2rem" }}>Atualizar</button>
             <button style={{ margin: "2rem" }}>Cancelar</button>
           </div>
-          <GraphComponent label={"Resultado"} width={400} height={300} graphId={"result-graph-id"} vertexes={vertexDataD} edges={edgeDataD} />
+          <GraphComponent label={"Resultado"} width={400} height={300} graphId={"result-graph-id"} vertexes={vertexDataD} edges={edgeDataD} /> // TODO - Alterar para pegar o destino selecionado e mostrar apenas após clicar em atualizar
         </div>
       </div>
     </>

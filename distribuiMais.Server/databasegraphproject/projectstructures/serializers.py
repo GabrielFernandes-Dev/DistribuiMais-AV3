@@ -9,7 +9,7 @@ class CentrodistribuicaoSerializer(serializers.ModelSerializer):
 class CentrodistribuicaoHasRuaSerializer(serializers.ModelSerializer):
     class Meta:
         model = CentrodistribuicaoHasRua
-        fields = ('centrodistribuicao_idcentrodistribuicao int', 'rua_idrua')
+        fields = ('centrodistribuicao_idcentrodistribuicao', 'rua_idrua')
 
 class DestinoSerializer(serializers.ModelSerializer):
     class Meta:
