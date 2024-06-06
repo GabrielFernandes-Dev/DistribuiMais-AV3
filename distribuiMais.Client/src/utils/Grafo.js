@@ -12,6 +12,7 @@ export class Grafo {
         }
         const vertice = new Vertice(nome);
         this.vertices.push(vertice);
+        return vertice
     }
 
     insereAresta(vertice1, vertice2, peso){
@@ -20,6 +21,10 @@ export class Grafo {
                 vertice.insereAdjacencia({vertice : vertice2, peso : peso})
             }
         }
+    }
+
+    getVertice(nome) {
+        return this.vertices.find(vertice => vertice.nome === nome);
     }
 
     dijkstra(inicio, fim){

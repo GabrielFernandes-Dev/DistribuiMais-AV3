@@ -61,13 +61,43 @@ function App() {
     return streets.filter(street => street.idrua == id)[0];
   }
 
+  const findDestinationIdByName = (name) => { 
+    return destinations.filter(destination => destination.nome == name)[0].iddestino;
+  }
+
+  const findStreetByVertices = (source, target) => {
+    const sourceId = findDestinationIdByName(source);
+    const targetId = findDestinationIdByName(target);
+  
+    const sourceLinks = streetLinks.filter(link => link.destino_iddestino == sourceId);
+    const targetLinks = streetLinks.filter(link => link.destino_iddestino == targetId);
+  
+    for (let sourceLink of sourceLinks) {
+      for (let targetLink of targetLinks) {
+        if (sourceLink.rua_idrua === targetLink.rua_idrua) {
+          return sourceLink.rua_idrua;
+        }
+      }
+    }
+    return null; // Retorna null se nenhum link comum for encontrado
+  };
+
   const handleVertex = () => {
     const aux = [];
-    aux.push(generateNodeObject(center[0]?.nome, 0, 0));
-    destinations.forEach((destination, index) => {
+    aux.push(generateNodeObject(center[0]?.nome));
+    destinations.forEach((destination) => {
       aux.push(generateNodeObject(destination.nome))
     })
     setVertexData(aux);
+  }
+
+  const hendleVertexD = (resultado) => {
+    const aux = [];
+    aux.push(generateNodeObject(center[0]?.nome));
+    resultado.forEach((destination) => {
+      aux.push(generateNodeObject(destination.nome))
+    })
+    setVertexDataD(aux);
   }
 
   const handleEdge = () => {
@@ -117,53 +147,66 @@ function App() {
       }
     });
     
-    const grafoDijkstra = []
-    console.log("grafoDijkstra");
-    Object.keys(streetDict).forEach(street => {
-      const ids = streetDict[street];
-      
-      if (ids.length > 1) {
-        for (let i = 0; i < ids.length; i++) {
-          for (let j = i + 1; j < ids.length; j++) {
-            pairsD.push(generateLink(findDestinationById(ids[i]).nome, findDestinationById(ids[j]).nome, parseInt(street)));
-          }
-        }
-      } else {
-        pairsD.push(generateLink(center[0].nome, findDestinationById(ids[0]).nome, parseInt(street)))
-      }
-    })
+    // Monta objeto para executar o dikjstra
+    const objVerticesDijkstra = MontarObjetoDijkstra(streetDict);
+    // Executa o dijkstra
+    const resultadoDijkstra = ExecutarDijkstra(objVerticesDijkstra, "cd", "f5");
 
+    hendleVertexD(resultadoDijkstra)
     const pairsD = [];
-    Object.keys(streetDict).forEach(street => {
-      const ids = streetDict[street];
-      // console.log(ids);
-      if (ids.length > 1) {
-        for (let i = 0; i < ids.length; i++) {
-          for (let j = i + 1; j < ids.length; j++) {
-            pairsD.push(generateLink(findDestinationById(ids[i]).nome, findDestinationById(ids[j]).nome, parseInt(street)));
-          }
-        }
-      } else {
-        pairsD.push(generateLink(center[0].nome, findDestinationById(ids[0]).nome, parseInt(street)))
-      }
-    });
+    for (let i = 0; i < resultadoDijkstra.length - 1; i++) {
+      pairsD.push(generateLink(resultadoDijkstra[i].nome, resultadoDijkstra[i + 1].nome, findStreetByVertices(resultadoDijkstra[i].nome, resultadoDijkstra[i + 1].nome)));
+    }
 
     // Resultado
-    // console.log(pairs);
     setEdgeData(pairs);
-    // console.log(pairsD);
     setEdgeDataD(pairsD);
   }
 
-  function ExecutarDijkstra(destinos, ruas) {
-    grafo = new Grafo()
-    destinos.forEach(destino => {
-      grafo.insereVertice(destino)
+  function MontarObjetoDijkstra(streetDict) {
+    const verticesDijkstra = []
+    Object.keys(streetDict).forEach(street => {
+      const ids = streetDict[street];
+      if (ids.length > 1) {
+        for (let i = 0; i < ids.length; i++) {
+          for (let j = i + 1; j < ids.length; j++) {
+            const adjacencia = {
+              vertice1: findDestinationById(ids[i]).nome,
+              vertice2: findDestinationById(ids[j]).nome,
+              peso: findStreetById(parseInt(street)).tempo
+            }
+            verticesDijkstra.push(adjacencia);
+          }
+        }
+      } else {
+        const adjacencia = {
+          vertice1: center[0].nome,
+          vertice2: findDestinationById(ids[0]).nome,
+          peso: findStreetById(parseInt(street)).tempo
+        }
+        verticesDijkstra.push(adjacencia);
+      }
+    })
+    return verticesDijkstra;
+  }
+
+  function ExecutarDijkstra(vertices, inicio, fim) {
+    const grafo = new Grafo()
+
+    vertices.forEach(vertice => {
+      const vertice1 = grafo.insereVertice(vertice.vertice1)
+      const vertice2 = grafo.insereVertice(vertice.vertice2)
+      grafo.insereAresta(vertice1, vertice2, vertice.peso)
     });
 
-    ruas.forEach(rua => {
-      grafo.insereAresta()
-    });
+    const verticeInicio = grafo.getVertice(inicio)
+    const verticeFim = grafo.getVertice(fim)
+    const resultado = grafo.dijkstra(verticeInicio, verticeFim)
+    console.log("Resultado");
+    for(let v = 0; v < resultado.length; v++){
+      console.log(resultado[v])
+    }
+    return resultado;
   }
 
   return (
@@ -181,7 +224,7 @@ function App() {
             <button style={{ margin: "2rem" }}>Atualizar</button>
             <button style={{ margin: "2rem" }}>Cancelar</button>
           </div>
-          <GraphComponent label={"Resultado"} width={400} height={300} graphId={"result-graph-id"} vertexes={vertexData} edges={edgeData} />
+          <GraphComponent label={"Resultado"} width={400} height={300} graphId={"result-graph-id"} vertexes={vertexDataD} edges={edgeDataD} />
         </div>
       </div>
     </>
