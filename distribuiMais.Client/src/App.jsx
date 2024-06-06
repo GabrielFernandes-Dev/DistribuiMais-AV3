@@ -91,7 +91,7 @@ function App() {
     setVertexData(aux);
   }
 
-  const hendleVertexD = (resultado) => {
+  const handleVertexD = (resultado) => {
     const aux = [];
     aux.push(generateNodeObject(center[0]?.nome));
     resultado.forEach((destination) => {
@@ -152,7 +152,7 @@ function App() {
     // Executa o dijkstra
     const resultadoDijkstra = ExecutarDijkstra(objVerticesDijkstra, "cd", "f5");
 
-    hendleVertexD(resultadoDijkstra)
+    handleVertexD(resultadoDijkstra)
     const pairsD = [];
     for (let i = 0; i < resultadoDijkstra.length - 1; i++) {
       pairsD.push(generateLink(resultadoDijkstra[i].nome, resultadoDijkstra[i + 1].nome, findStreetByVertices(resultadoDijkstra[i].nome, resultadoDijkstra[i + 1].nome)));
@@ -176,6 +176,13 @@ function App() {
               peso: findStreetById(parseInt(street)).tempo
             }
             verticesDijkstra.push(adjacencia);
+
+            const adjacencia2 = {
+              vertice1: findDestinationById(ids[j]).nome,
+              vertice2: findDestinationById(ids[i]).nome,
+              peso: findStreetById(parseInt(street)).tempo
+            }
+            verticesDijkstra.push(adjacencia2);
           }
         }
       } else {
@@ -185,18 +192,35 @@ function App() {
           peso: findStreetById(parseInt(street)).tempo
         }
         verticesDijkstra.push(adjacencia);
+
+        const adjacencia2 = {
+          vertice1: findDestinationById(ids[0]).nome,
+          vertice2: center[0].nome,
+          peso: findStreetById(parseInt(street)).tempo
+        }
+        verticesDijkstra.push(adjacencia2);
       }
     })
+
+    console.log("Olhando vértices do dijkstra retornados na montagem");
+    console.log(verticesDijkstra)
     return verticesDijkstra;
   }
 
   function ExecutarDijkstra(vertices, inicio, fim) {
     const grafo = new Grafo()
-
+    
+    console.log("Construir grafo");
     vertices.forEach(vertice => {
+      console.log("Aresta com: " + vertice.vertice1 + " e " + vertice.vertice2)
+
       const vertice1 = grafo.insereVertice(vertice.vertice1)
       const vertice2 = grafo.insereVertice(vertice.vertice2)
       grafo.insereAresta(vertice1, vertice2, vertice.peso)
+
+      console.log("Vértice 1: " + vertice1.nome)
+      console.log("Vértice 2: " + vertice2.nome)
+      //console.log("Olhando grafo: " + grafo.vertices[0].adjacencia[0].vertice.nome);
     });
 
     const verticeInicio = grafo.getVertice(inicio)
@@ -204,8 +228,9 @@ function App() {
     const resultado = grafo.dijkstra(verticeInicio, verticeFim)
     console.log("Resultado");
     for(let v = 0; v < resultado.length; v++){
-      console.log(resultado[v])
+      console.log(resultado[v].nome)
     }
+    console.log("Fim resultado");
     return resultado;
   }
 
