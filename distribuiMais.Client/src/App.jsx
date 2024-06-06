@@ -33,6 +33,8 @@ function App() {
   const [centerStreets, setCenterStreets] = useState([]);
   const [drugs, setDrugs] = useState([]);
   const [stock, setStock] = useState([]);
+  const [streetDestinations, setStreetDestinations] = useState({});
+  const [selectedDestination, setSelectedDestination] = useState(null);
 
 
   useEffect(() => {
@@ -111,6 +113,10 @@ function App() {
     setVertexDataD(aux);
   }
 
+  const handleDestinationChange = (event) => {
+    setSelectedDestination(event.target.value);
+  };
+
   const handleEdge = () => {
     let destinationAux = destinations.map((destination) => {
       return {
@@ -132,20 +138,21 @@ function App() {
       }
     });
 
-    const streetDict = {};
+    const newStreetDict = {};
     destinationAux.forEach(item => {
       item.streets.forEach(street => {
-        if (!streetDict[street]) {
-          streetDict[street] = [];
+        if (!newStreetDict[street]) {
+          newStreetDict[street] = [];
         }
-        streetDict[street].push(item.id);
+        newStreetDict[street].push(item.id);
       });
     });
+    setStreetDestinations(newStreetDict);
 
     // Passo 2: Criar os pares source-target incluindo a street
     const pairs = [];
-    Object.keys(streetDict).forEach(street => {
-      const ids = streetDict[street];
+    Object.keys(newStreetDict).forEach(street => {
+      const ids = newStreetDict[street];
       // console.log(ids);
       if (ids.length > 1) {
         for (let i = 0; i < ids.length; i++) {
@@ -158,22 +165,21 @@ function App() {
       }
     });
     
-    // Monta objeto para executar o dikjstra
-    const objVerticesDijkstra = MontarObjetoDijkstra(streetDict);
-    // Executa o dijkstra
-    const resultadoDijkstra = ExecutarDijkstra(objVerticesDijkstra, "cd", "f5"); // TODO - Alterar para pegar o destino selecionado ("f5" está fixo precisa vir do select destino)
+    setEdgeData(pairs);
+  }
 
+  const updateDijkstra = () => {
+    // Monta objeto para executar o dikjstra
+    const objVerticesDijkstra = MontarObjetoDijkstra(streetDestinations);
+    // Executa o dijkstra
+    const resultadoDijkstra = ExecutarDijkstra(objVerticesDijkstra, "cd", selectedDestination); // TODO - Alterar para pegar o destino selecionado ("f5" está fixo precisa vir do select destino)
+    
     handleVertexD(resultadoDijkstra)
     const pairsD = [];
     for (let i = 0; i < resultadoDijkstra.length - 1; i++) {
       pairsD.push(generateLink(resultadoDijkstra[i].nome, resultadoDijkstra[i + 1].nome, findStreetByVertices(resultadoDijkstra[i].nome, resultadoDijkstra[i + 1].nome)));
     }
-
-    console.log("Olhando pares do dijkstra retornados na montagem");
-    console.log(pairsD);
-
     // Resultado
-    setEdgeData(pairs);
     setEdgeDataD(pairsD);
   }
 
@@ -253,9 +259,9 @@ function App() {
         </div>
         <div className="right-app-container" style={{ margin: "0 2rem" }}>
           <div>
-            <Select label="Destino" options={destinations} />
+            <Select label="Destino" options={destinations} onChange={handleDestinationChange} />
             <Select label="Medicamento" options={drugs} />
-            <button style={{ margin: "2rem" }}>Atualizar</button>
+            <button style={{ margin: "2rem" }} onClick={updateDijkstra}>Atualizar</button>
             <button style={{ margin: "2rem" }}>Cancelar</button>
           </div>
           <GraphComponent label={"Resultado"} width={400} height={300} graphId={"result-graph-id"} vertexes={vertexDataD} edges={edgeDataD} /> // TODO - Alterar para pegar o destino selecionado e mostrar apenas após clicar em atualizar
