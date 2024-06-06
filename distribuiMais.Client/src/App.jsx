@@ -117,7 +117,7 @@ function App() {
     setSelectedDestination(event.target.value);
   };
 
-  const handleEdge = () => {
+  const montarDestinationAux = () => {
     let destinationAux = destinations.map((destination) => {
       return {
         ...destination,
@@ -137,7 +137,10 @@ function App() {
         streets: item.streets
       }
     });
+    return destinationAux;
+  }
 
+  const streetDict = (destinationAux) => { 
     const newStreetDict = {};
     destinationAux.forEach(item => {
       item.streets.forEach(street => {
@@ -147,13 +150,19 @@ function App() {
         newStreetDict[street].push(item.id);
       });
     });
+    return newStreetDict;
+  }
+
+  const handleEdge = () => {
+    let destinationAux = montarDestinationAux();
+
+    const newStreetDict = streetDict(destinationAux);
     setStreetDestinations(newStreetDict);
 
     // Passo 2: Criar os pares source-target incluindo a street
     const pairs = [];
     Object.keys(newStreetDict).forEach(street => {
       const ids = newStreetDict[street];
-      // console.log(ids);
       if (ids.length > 1) {
         for (let i = 0; i < ids.length; i++) {
           for (let j = i + 1; j < ids.length; j++) {
@@ -172,7 +181,7 @@ function App() {
     // Monta objeto para executar o dikjstra
     const objVerticesDijkstra = MontarObjetoDijkstra(streetDestinations);
     // Executa o dijkstra
-    const resultadoDijkstra = ExecutarDijkstra(objVerticesDijkstra, "cd", selectedDestination); // TODO - Alterar para pegar o destino selecionado ("f5" está fixo precisa vir do select destino)
+    const resultadoDijkstra = ExecutarDijkstra(objVerticesDijkstra, "cd", selectedDestination); 
     
     handleVertexD(resultadoDijkstra)
     const pairsD = [];
@@ -222,30 +231,21 @@ function App() {
       }
     })
 
-    // console.log("Olhando vértices do dijkstra retornados na montagem");
-    // console.log(verticesDijkstra)
     return verticesDijkstra;
   }
 
   function ExecutarDijkstra(vertices, inicio, fim) {
     const grafo = new Grafo()
     
-    console.log("Construir grafo");
     vertices.forEach(vertice => {
       let vertice1 = grafo.insereVertice(vertice.vertice1)
       let vertice2 = grafo.insereVertice(vertice.vertice2)
       grafo.insereAresta(vertice1, vertice2, vertice.peso)
-      //console.log("Olhando grafo: " + grafo.vertices[0].adjacencia[0].vertice.nome);
     });
 
     const verticeInicio = grafo.getVertice(inicio)
     const verticeFim = grafo.getVertice(fim)
     const resultado = grafo.dijkstra(verticeInicio, verticeFim)
-    console.log("Resultado");
-    for(let v = 0; v < resultado.length; v++){
-      console.log(resultado[v].nome)
-    }
-    console.log("Fim resultado");
     return resultado;
   }
 
@@ -264,7 +264,7 @@ function App() {
             <button style={{ margin: "2rem" }} onClick={updateDijkstra}>Atualizar</button>
             <button style={{ margin: "2rem" }}>Cancelar</button>
           </div>
-          <GraphComponent label={"Resultado"} width={400} height={300} graphId={"result-graph-id"} vertexes={vertexDataD} edges={edgeDataD} /> // TODO - Alterar para pegar o destino selecionado e mostrar apenas após clicar em atualizar
+          <GraphComponent label={"Resultado"} width={400} height={300} graphId={"result-graph-id"} vertexes={vertexDataD} edges={edgeDataD} />
         </div>
       </div>
     </>
