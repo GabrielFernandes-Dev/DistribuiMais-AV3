@@ -57,6 +57,7 @@ function App() {
     }
   }, [center, destinations, streetLinks])
 
+
   const findDestinationById = (id) => {
     return destinations.filter(destination => destination.iddestino == id)[0];
   }
@@ -95,6 +96,10 @@ function App() {
     }
     return null; // Retorna null se nenhum link comum for encontrado
   };
+  
+  const handleDestinationChange = (event) => {
+    setSelectedDestination(event.target.value);
+  };
 
   const handleVertex = () => {
     const aux = [];
@@ -112,10 +117,6 @@ function App() {
     })
     setVertexDataD(aux);
   }
-
-  const handleDestinationChange = (event) => {
-    setSelectedDestination(event.target.value);
-  };
 
   const montarDestinationAux = () => {
     let destinationAux = destinations.map((destination) => {
@@ -259,7 +260,7 @@ function App() {
         </div>
         <div className="right-app-container" style={{ margin: "0 2rem" }}>
           <div>
-            <Select label="Destino" options={destinations} onChange={handleDestinationChange} />
+            <Select label="Destino" options={destinations.filter(destination => destination.farmacia == 1)} onChange={handleDestinationChange} />
             <Select label="Medicamento" options={drugs} />
             <button style={{ margin: "2rem" }} onClick={updateDijkstra}>Atualizar</button>
             <button style={{ margin: "2rem" }}>Cancelar</button>

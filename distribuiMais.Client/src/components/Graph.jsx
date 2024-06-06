@@ -4,7 +4,7 @@ import { useState } from "react";
 
 function GraphComponent({graphId, vertexes, edges, width, height, label}) {
     // graph payload (with minimalist structure)
-    console.log(vertexes);
+    // console.log(vertexes);
     const data = {
         nodes: vertexes,
         links: edges
