@@ -102,6 +102,7 @@ function App() {
     setSelectedDestination(event.target.value);
   };
 
+  // Montar grafo com todas as rotas
   const handleVertex = () => {
     const aux = [];
     aux.push(generateNodeObject(center[0]?.nome));
@@ -111,15 +112,6 @@ function App() {
     setVertexData(aux);
   };
 
-  const handleVertexD = (resultado) => {
-    const aux = [];
-    resultado.forEach((destination) => {
-      aux.push(generateNodeObject(destination.nome))
-    })
-    setVertexDataD(aux);
-  };
-
-  // Montar grafo com todas as rotas
   const montarDestinationAux = () => {
     let destinationAux = destinations.map((destination) => {
       return {
@@ -181,6 +173,14 @@ function App() {
   };
 
   // Montar grafo com menor caminho
+  const handleVertexD = (resultado) => {
+    const aux = [];
+    resultado.forEach((destination) => {
+      aux.push(generateNodeObject(destination.nome))
+    })
+    setVertexDataD(aux);
+  };
+
   const updateDijkstra = () => {
     // Monta objeto para executar o dikjstra
     const objVerticesDijkstra = MontarObjetoDijkstra(streetDestinations);
