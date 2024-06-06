@@ -57,7 +57,7 @@ function App() {
     }
   }, [center, destinations, streetLinks])
 
-
+  // Funções auxiliares
   const findDestinationById = (id) => {
     return destinations.filter(destination => destination.iddestino == id)[0];
   }
@@ -97,6 +97,7 @@ function App() {
     return null; // Retorna null se nenhum link comum for encontrado
   };
   
+  // Handlers de eventos
   const handleDestinationChange = (event) => {
     setSelectedDestination(event.target.value);
   };
@@ -108,7 +109,7 @@ function App() {
       aux.push(generateNodeObject(destination.nome))
     })
     setVertexData(aux);
-  }
+  };
 
   const handleVertexD = (resultado) => {
     const aux = [];
@@ -116,8 +117,9 @@ function App() {
       aux.push(generateNodeObject(destination.nome))
     })
     setVertexDataD(aux);
-  }
+  };
 
+  // Montar grafo com todas as rotas
   const montarDestinationAux = () => {
     let destinationAux = destinations.map((destination) => {
       return {
@@ -139,9 +141,9 @@ function App() {
       }
     });
     return destinationAux;
-  }
+  };
 
-  const streetDict = (destinationAux) => { 
+  const streetDict = (destinationAux) => {
     const newStreetDict = {};
     destinationAux.forEach(item => {
       item.streets.forEach(street => {
@@ -152,7 +154,7 @@ function App() {
       });
     });
     return newStreetDict;
-  }
+  };
 
   const handleEdge = () => {
     let destinationAux = montarDestinationAux();
@@ -176,13 +178,14 @@ function App() {
     });
     
     setEdgeData(pairs);
-  }
+  };
 
+  // Montar grafo com menor caminho
   const updateDijkstra = () => {
     // Monta objeto para executar o dikjstra
     const objVerticesDijkstra = MontarObjetoDijkstra(streetDestinations);
     // Executa o dijkstra
-    const resultadoDijkstra = ExecutarDijkstra(objVerticesDijkstra, "cd", selectedDestination); 
+    const resultadoDijkstra = ExecutarDijkstra(objVerticesDijkstra, "cd", selectedDestination);
     
     handleVertexD(resultadoDijkstra)
     const pairsD = [];
@@ -191,7 +194,7 @@ function App() {
     }
     // Resultado
     setEdgeDataD(pairsD);
-  }
+  };
 
   function MontarObjetoDijkstra(streetDict) {
     const verticesDijkstra = []
@@ -250,6 +253,7 @@ function App() {
     return resultado;
   }
 
+  // Renderização
   return (
     <>
       <Menu></Menu>
