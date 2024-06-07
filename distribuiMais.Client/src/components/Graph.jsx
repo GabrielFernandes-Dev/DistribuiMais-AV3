@@ -4,7 +4,6 @@ import { useState } from "react";
 
 function GraphComponent({graphId, vertexes, edges, width, height, label}) {
     // graph payload (with minimalist structure)
-    // console.log(vertexes);
     const data = {
         nodes: vertexes,
         links: edges
@@ -15,21 +14,26 @@ function GraphComponent({graphId, vertexes, edges, width, height, label}) {
         nodeHighlightBehavior: true,
         panAndZoom: true,
         node: {
-            highlightStrokeColor: "blue",
-            size: 300,
-            svg: icon,
-            fontColor: "#fff",
-            fontSize: 16,
-            highlightFontSize: 16,
-            labelPosition: "top",
+          highlightStrokeColor: "blue",
+          size: 300,
+          svg: icon,
+          fontColor: "#fff",
+          fontSize: 16,
+          highlightFontSize: 16,
+          labelPosition: "top",
         },
         link: {
-            highlightColor: "lightblue",
+          highlightColor: "lightblue",
+          renderLabel: true,
+          labelProperty: 'label',
+          fontColor: 'white',
+          fontSize: 16,
+          fontWeight: 'bold',
         },
         height: height,
         width: width,
         initialZoom: 1,
-    };
+      };
 
     const onClickNode = function (nodeId) {
         window.alert(`Clicked node ${nodeId}`);

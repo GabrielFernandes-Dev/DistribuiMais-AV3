@@ -1,49 +1,44 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
 div {
   border-radius: 8px;
 }
 
 .box-select {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 2rem;
-    width: 30rem;
-  }
-  
-  .box-select .select {
-    flex: 1 0 40%; 
-    margin-right: 10px;
-  }
-  
-  .box-select button {
-    flex: 1;
-    width: 2rem;
-  }
-
-.select {
-  background: #ffffff;
-  color: black;
-  border-radius: 0.1rem;
-  position: relative;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  max-width: 400px;
 }
-.select select {
-  width: 10rem;
-}
+
 .label {
-    padding: 0.5rem 2rem;
-    margin: 0rem 2rem 0rem 2rem;
-    font-size: 1em;
-    font-weight: 500;
+  padding: 0.5rem 0;
+  font-size: 1em;
+  font-weight: 500;
+  color: #ffffff;
 }
 
 .select-container {
   position: relative;
-  display: inline-block;
-  background: #ffffff;
-  color: black;
-  border-radius: 0.1rem;
+  width: 100%;
+}
+
+.select-container select {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border: 2px solid #3eb6a0;
+  border-radius: 0.5rem;
+  background-color: #ffffff;
+  color: #333;
+  font-size: 1em;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
 }
 
 .select-container::after {
@@ -56,17 +51,13 @@ div {
   color: #3eb6a0;
 }
 
-select {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  background: transparent;
-  border: none;
+.select-container select:focus {
+  border-color: #5aa5a0;
   outline: none;
-  box-shadow: none;
-  padding: 0;
-  font-size: 1em;
-  color: inherit;
-  width: 100%;
-  padding-right: 20px;
+  box-shadow: 0 0 5px rgba(91, 91, 219, 0.5);
+}
+
+.select-container select option {
+  background-color: #ffffff;
+  color: #333;
 }

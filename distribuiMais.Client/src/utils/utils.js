@@ -7,8 +7,8 @@ export const setInitialData = (handlers) => {
     const { route, setter } = handlers.shift();
     apiConnection(route, (response) => {
         setter(response.data);
-        console.log(route);
-        console.log(response.data);
+        // console.log(route);
+        // console.log(response.data);
     }, (error) => console.log(error));
     setInitialData(handlers);
 };

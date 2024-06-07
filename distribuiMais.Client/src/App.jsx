@@ -14,11 +14,12 @@ function App() {
       y: y,
     };
   };
-  const generateLink = (source, target, street) => {
+  const generateLink = (source, target, street, pesos) => {
     return {
       source: source,
       target: target,
-      street: street
+      street: street,
+      label: pesos
     };
   };
 
@@ -161,11 +162,11 @@ function App() {
       if (ids.length > 1) {
         for (let i = 0; i < ids.length; i++) {
           for (let j = i + 1; j < ids.length; j++) {
-            pairs.push(generateLink(findDestinationById(ids[i]).nome, findDestinationById(ids[j]).nome, parseInt(street)));
+            pairs.push(generateLink(findDestinationById(ids[i]).nome, findDestinationById(ids[j]).nome, parseInt(street), findStreetById(street).tempo));
           }
         }
       } else {
-        pairs.push(generateLink(center[0].nome, findDestinationById(ids[0]).nome, parseInt(street)))
+        pairs.push(generateLink(center[0].nome, findDestinationById(ids[0]).nome, parseInt(street), findStreetById(street).tempo))
       }
     });
     
@@ -190,7 +191,8 @@ function App() {
     handleVertexD(resultadoDijkstra)
     const pairsD = [];
     for (let i = 0; i < resultadoDijkstra.length - 1; i++) {
-      pairsD.push(generateLink(resultadoDijkstra[i].nome, resultadoDijkstra[i + 1].nome, findStreetByVertices(resultadoDijkstra[i].nome, resultadoDijkstra[i + 1].nome)));
+      let idStreet = findStreetByVertices(resultadoDijkstra[i].nome, resultadoDijkstra[i + 1].nome)
+      pairsD.push(generateLink(resultadoDijkstra[i].nome, resultadoDijkstra[i + 1].nome, idStreet, findStreetById(idStreet).tempo));
     }
     // Resultado
     setEdgeDataD(pairsD);
@@ -263,7 +265,7 @@ function App() {
           <GraphComponent width={800} height={600} graphId={"graph-id"} vertexes={vertexData} edges={edgeData} />
         </div>
         <div className="right-app-container" style={{ margin: "0 2rem" }}>
-          <div>
+          <div style={{ marginTop: "3rem" }}>
             <Select label="Destino" options={destinations.filter(destination => destination.farmacia == 1)} onChange={handleDestinationChange} />
             <Select label="Medicamento" options={drugs} />
             <button style={{ margin: "2rem" }} onClick={updateDijkstra}>Atualizar</button>

@@ -6,37 +6,30 @@ const Menu = () => {
   const user = localStorage.getItem('user');
 
   return (
-    <>
     <div className="navbar">
-      <div>
+      <div className="navbar-left">
         <Link to="/">
-          <a><img src="/src/assets/logo.png" className="navbar-logo" alt='Distribuimais'/></a>
+          <img src="/src/assets/logo.png" className="navbar-logo" alt='Distribuimais' />
         </Link>
       </div>
-      <div>
-        <a href="#">Sobre</a>
-        <a href="#">Serviços</a>
+      <div className="navbar-center">
+        <Link to="/">Home</Link>
+        <Link to="#">Serviços</Link>
         <Link to="/medicamento/novo">Novo medicamento</Link>
         <Link to="/medicamento/editar">Gerenciar medicamentos</Link>
       </div>
-      <div style={{ marginBottom: '.5rem' }}>
+      <div className="navbar-right">
         {user ? (
           <>
-            <a>Olá, {user[0].toUpperCase() + user.substring(1)}</a>
-            <a>|</a>
+            <span>Olá, {user[0].toUpperCase() + user.substring(1)}</span>
+            <span>|</span>
             <a href="" onClick={() => localStorage.removeItem('user')}> Sair</a>
           </>
         ) : (
-          <>
-            <button style={{background: "#A051C4"}}>
-              <Link to="/login">Entrar</Link>
-            </button>
-            <a href="">Cadastre-se</a>
-          </>
+          <Link to="/login" className="login-button">Entrar</Link>
         )}
       </div>
     </div>
-    </>
   );
 };
 
